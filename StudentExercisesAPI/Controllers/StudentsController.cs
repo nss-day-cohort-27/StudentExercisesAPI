@@ -31,9 +31,9 @@ namespace StudentExercisesAPI.Controllers
             }
         }
 
-        // GET api/students?q=Taco
+        // GET api/students?q=an&orderby=Lastname
         [HttpGet]
-        public async Task<IActionResult> Get(string q)
+        public async Task<IActionResult> Get(string q, string orderby)
         {
             string sql = @"
             SELECT
@@ -52,11 +52,20 @@ namespace StudentExercisesAPI.Controllers
             if (q != null)
             {
                 string isQ = $@"
-                    AND i.FirstName LIKE '%{q}%'
-                    OR i.LastName LIKE '%{q}%'
-                    OR i.SlackHandle LIKE '%{q}%'
+                    AND s.FirstName LIKE '%{q}%'
+                    OR s.LastName LIKE '%{q}%'
+                    OR s.SlackHandle LIKE '%{q}%'
                 ";
                 sql = $"{sql} {isQ}";
+            }
+
+            if (orderby != null)
+            {
+                string isOrdered = $@"
+                    ORDER BY {orderby}
+                ";
+
+                sql = $"{sql} {isOrdered}";
             }
 
             Console.WriteLine(sql);
