@@ -102,8 +102,15 @@ namespace StudentExercisesAPI.Controllers
 
             using (IDbConnection conn = Connection)
             {
-                IEnumerable<Student> students = await conn.QueryAsync<Student>(sql);
-                return Ok(students);
+                Student student = await conn.QuerySingleOrDefaultAsync<Student>(sql);
+
+                if (student == null)
+                {
+                    return new StatusCodeResult(StatusCodes.Status404NotFound);
+                } else
+                {
+                    return Ok(student);
+                }
             }
         }
 
@@ -179,7 +186,7 @@ namespace StudentExercisesAPI.Controllers
                 {
                     return new StatusCodeResult(StatusCodes.Status204NoContent);
                 }
-                throw new Exception("No rows affected");
+                return new StatusCodeResult(StatusCodes.Status404NotFound);
             }
 
         }
